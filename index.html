@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos - Personal Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Spotlight Effect */
+        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.9) 50%, #000 100%);
+            z-index: -1;
+        }
+
+        .spotlight::before {
+            content: '';
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
+        }
+
+        /* Wave Canvas */
+        #waveCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, #ccc 50%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -3px;
+        }
+
+        /* Tagline */
+        .tagline {
+            font-size: 1.5rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Wave Space */
+        .wave-space {
+            width: 100%;
+            max-width: 600px;
+            height: 120px;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        /* Main Message */
+        .message {
+            font-size: 1.8rem;
+            color: #ddd;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* Newsletter Form */
+        .newsletter {
+            margin-top: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.875rem;
+            width: 280px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .email-input:focus {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .email-input::placeholder {
+            color: #888;
+        }
+
+        /* Shadcn-style button */
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            height: 2.5rem;
+            background: #fff;
+            color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .submit-btn:focus-visible {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .submit-btn:disabled:hover {
+            background: #fff;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Loading state */
+        .submit-btn.loading {
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .form-message {
+            margin-top: 1.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border: 1px solid;
+        }
+
+        .form-message.success {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .form-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .privacy-note {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 3.5rem;
+            }
+
+            .message {
+                font-size: 1.4rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .email-input {
+                width: 280px;
+            }
+
+            .wave-space {
+                margin: 1.5rem 0;
+                max-width: 400px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 2.8rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .message {
+                font-size: 1.2rem;
+            }
+
+            .email-input {
+                width: 250px;
+            }
+
+            .wave-space {
+                max-width: 300px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="spotlight"></div>
+    <canvas id="waveCanvas"></canvas>
+
+    <div class="container">
+        <div class="logo">Logos</div>
+        <div class="tagline">Personal Intelligence</div>
+
+        <div class="wave-space"></div>
+
+        <div class="message">
+            Your <span class="highlight">voice</span>. Your <span class="highlight">intent</span>.<br>
+            Your process â <span class="highlight">automated</span>.
+        </div>
+
+        <div class="newsletter">
+            <form class="newsletter-form" id="newsletterForm" action="https://formspree.io/f/mblyewdb" method="POST">
+                <!-- Hidden fields for email setup -->
+                <input type="hidden" name="_subject" value="New form from logos">
+                
+                <input 
+                    type="email" 
+                    class="email-input" 
+                    id="emailInput"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Get Early Access</span>
+                </button>
+            </form>
+            
+            <div class="form-message" id="formMessage" style="display: none;"></div>
+            <div class="privacy-note">No spam. Your privacy matters.</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let time = 0;
+        let animationId;
+        // Position waves higher up on the screen
+        const centerY = canvas.height * 0.35;
+        
+        function drawVoiceWaves() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw baseline (subtle)
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+            
+            // Draw multiple wave layers with white/glowing effect
+            const numWaves = 8;
+            
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                
+                // Wave properties
+                const frequency = 0.01 + i * 0.003;
+                const maxAmplitude = 50 + i * 6;
+                const speed = time * (0.02 + i * 0.002);
+                const phase = i * Math.PI * 0.3;
+                
+                // Create white gradient with varying opacity
+                const gradient = ctx.createLinearGradient(0, centerY - maxAmplitude, 0, centerY + maxAmplitude);
+                
+                // Different opacity levels for layering effect
+                const baseOpacity = 0.8 - (i * 0.08); // Decreasing opacity for depth
+                
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${baseOpacity * 0.6})`);
+                gradient.addColorStop(0.5, `rgba(255, 255, 255, ${baseOpacity})`);
+                gradient.addColorStop(1, `rgba(255, 255, 255, ${baseOpacity * 0.6})`);
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 2 - (i * 0.1); // Varying line width
+                
+                // Enhanced glow effect
+                ctx.shadowBlur = 20 + (i * 2);
+                ctx.shadowColor = `rgba(255, 255, 255, ${baseOpacity * 0.8})`;
+                
+                // Start from baseline
+                ctx.moveTo(0, centerY);
+                
+                // Draw wave that returns to baseline
+                for (let x = 0; x <= canvas.width; x += 1) {
+                    // Create envelope that fades to zero at edges
+                    const edgeFade = Math.sin((x / canvas.width) * Math.PI);
+                    
+                    // Main wave with harmonics
+                    let amplitude = Math.sin(x * frequency + speed + phase) * maxAmplitude * 0.6;
+                    amplitude += Math.sin(x * frequency * 2.1 + speed * 1.3 + phase) * maxAmplitude * 0.3;
+                    amplitude += Math.sin(x * frequency * 3.7 + speed * 0.7 + phase) * maxAmplitude * 0.1;
+                    
+                    // Apply envelope
+                    amplitude *= edgeFade;
+                    
+                    const y = centerY + amplitude;
+                    ctx.lineTo(x, y);
+                }
+                
+                ctx.stroke();
+                
+                // Reset shadow for next wave
+                ctx.shadowBlur = 0;
+            }
+        }
+        
+        function animate() {
+            drawVoiceWaves();
+            time += 1;
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Start animation immediately and continuously
+        animate();
+
+        // Enhanced Form Handling with Real Email Submission
+        const form = document.getElementById('newsletterForm');
+        const emailInput = document.getElementById('emailInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const formMessage = document.getElementById('formMessage');
+
+        function showMessage(message, type) {
+            formMessage.textContent = message;
+            formMessage.className = `form-message ${type}`;
+            formMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            
+            try {
+                // Submit to your Formspree endpoint
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showMessage('Welcome! You\'ll hear from us soon.', 'success');
+                    emailInput.value = '';
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            } catch (error) {
+                showMessage('Something went wrong. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html>
